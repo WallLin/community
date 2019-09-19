@@ -1,11 +1,17 @@
 ## Kyrie Community
 
 ## 资料
-https://elasticsearch.cn
+[elastic中文](https://elasticsearch.cn)
 
-https://spring.io/guides
+[Spring文档](https://spring.io/guides)
 
-https://www.bootcss.com/
+[Bootstrap文档](https://www.bootcss.com/)
+
+[Github OAuth](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/)
+
+
 
 ## 工具
-https://git-scm.com/downloads
+[Git](https://git-scm.com/downloads)
+
+[Visual Paradigm](https://www.visual-paradigm.com/cn/)
