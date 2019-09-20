@@ -2,6 +2,8 @@ package com.kyrie.community.controller;
 
 import com.kyrie.community.dto.AccessTokenDTO;
 import com.kyrie.community.dto.UserDTO;
+import com.kyrie.community.entity.User;
+import com.kyrie.community.mapper.UserMapper;
 import com.kyrie.community.provider.GithubProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,7 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+import java.util.UUID;
 
 
 /**
@@ -29,10 +33,11 @@ public class AuthorizeController {
     @Value("${github.redirect.uri}")
     private String redirectUri;
 
+    @Autowired
+    private UserMapper userMapper;
+
     @GetMapping("/callback")
-    public String callback(@RequestParam(name = "code") String code,
-                           @RequestParam(name = "state") String state,
-                           HttpServletRequest request) {
+    public String callback(@RequestParam(name = "code") String code, @RequestParam(name = "state") String state, HttpServletResponse response) {
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
         accessTokenDTO.setClient_id(clientId);
         accessTokenDTO.setClient_secret(clientSecret);
@@ -42,7 +47,16 @@ public class AuthorizeController {
         String accessToken = githubProvider.getAccessToken(accessTokenDTO);
         UserDTO userDTO = githubProvider.getUserDTO(accessToken);
         if (userDTO != null) {
-            request.getSession().setAttribute("user", userDTO);
+            User user = new User();
+            user.setToken(UUID.randomUUID().toString());
+            user.setName(userDTO.getName());
+            user.setAccountId(String.valueOf(userDTO.getId()));
+            user.setGmtCreated(System.currentTimeMillis());
+            user.setGmtModified(user.getGmtCreated());
+            userMapper.insert(user);
+            //将用户登录状态的信息放到Cookie中
+            response.addCookie(new Cookie("token", user.getToken()));
+
             return "redirect:/";
         }
         return "redirect:/";

@@ -18,6 +18,7 @@
         <java.version>1.8</java.version>
         <okhttp.version>4.2.0</okhttp.version>
         <fastjson.version>1.2.60</fastjson.version>
+        <mybatis.version>2.1.0</mybatis.version>
     </properties>
 
     <dependencies>
@@ -32,10 +33,27 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
         <!-- Spring Boot End-->
+
+        <!-- DataSource Begin-->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>${mybatis.version}</version>
+        </dependency>
+        <!-- DataSource End-->
 
         <!-- OKHttp Start-->
         <dependency>
@@ -50,6 +68,10 @@
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>${fastjson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.xmlunit</groupId>
+            <artifactId>xmlunit-core</artifactId>
         </dependency>
         <!-- FastJson End-->
     </dependencies>
