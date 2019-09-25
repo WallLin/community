@@ -15,3 +15,5 @@
 [Git](https://git-scm.com/downloads)
 
 [Visual Paradigm](https://www.visual-paradigm.com/cn/)
+
+[Lombok](https://projectlombok.org)

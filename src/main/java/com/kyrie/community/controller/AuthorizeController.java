@@ -53,6 +53,7 @@ public class AuthorizeController {
             user.setAccountId(String.valueOf(userDTO.getId()));
             user.setGmtCreated(System.currentTimeMillis());
             user.setGmtModified(user.getGmtCreated());
+            user.setAvatarUrl(userDTO.getAvatarUrl());
             userMapper.insert(user);
             //将用户登录状态的信息放到Cookie中
             response.addCookie(new Cookie("token", user.getToken()));

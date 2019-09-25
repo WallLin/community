@@ -1,10 +1,13 @@
 package com.kyrie.community.entity;
 
+import lombok.Data;
+
 /**
  * 用户实体类
  * @author kyrie
  * @date 2019/9/20 - 15:39
  */
+@Data
 public class User {
     private Integer id;
     private String accountId;
@@ -12,52 +15,5 @@ public class User {
     private String token;
     private Long gmtCreated;
     private Long gmtModified;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(String accountId) {
-        this.accountId = accountId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public Long getGmtCreated() {
-        return gmtCreated;
-    }
-
-    public void setGmtCreated(Long gmtCreated) {
-        this.gmtCreated = gmtCreated;
-    }
-
-    public Long getGmtModified() {
-        return gmtModified;
-    }
-
-    public void setGmtModified(Long gmtModified) {
-        this.gmtModified = gmtModified;
-    }
+    private String avatarUrl;  // 头像地址
 }
