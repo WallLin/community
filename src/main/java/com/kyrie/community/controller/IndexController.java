@@ -1,7 +1,6 @@
 package com.kyrie.community.controller;
 
 import com.kyrie.community.dto.PaginationDTO;
-import com.kyrie.community.mapper.UserMapper;
 import com.kyrie.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

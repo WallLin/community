@@ -68,4 +68,47 @@ public class QuestionService {
 
         return pagination;
     }
+
+    /**
+     * 根据问题id查询问题详情
+     * @param id
+     * @return
+     */
+    public Question findById(Integer id) {
+        Question question = questionMapper.findById(id);
+        if (question != null) {
+            User user = userMapper.findById(question.getCreatorId());
+            question.setUser(user);
+        }
+        return question;
+    }
+
+    /**
+     * 创建或更新问题详情
+     * @param id
+     * @param title
+     * @param description
+     * @param tag
+     */
+    public void createOrUpdate(Integer id, String title, String description, String tag, User user) {
+        Question question = new Question();
+        question.setTitle(title);
+        question.setDescription(description);
+        question.setTag(tag);
+        question.setGmtModified(System.currentTimeMillis());
+        Integer count = questionMapper.countById(id);
+
+        // 更新问题
+        if (count > 0) {
+            question.setId(id);
+            questionMapper.update(question);
+        }
+
+        // 创建、发布新问题
+        else {
+            question.setCreatorId(user.getId());
+            question.setGmtCreated(System.currentTimeMillis());
+            questionMapper.insert(question);
+        }
+    }
 }

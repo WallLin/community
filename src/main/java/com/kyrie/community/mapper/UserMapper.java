@@ -4,6 +4,7 @@ import com.kyrie.community.entity.User;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 /**
  * @author kyrie
@@ -19,4 +20,15 @@ public interface UserMapper {
 
     @Select("select * from user where id = #{id}")
     User findById(Integer creatorId);
+
+    /**
+     * 判断用户是否存在
+     * @param accountId
+     * @return
+     */
+    @Select("select count(1) from user where account_id = #{accountId}")
+    Integer findByAccountId(String accountId);
+
+    @Update("update user set name=#{name}, token=#{token}, gmt_modified=#{gmtModified}, avatar_url=#{avatarUrl} where account_id = #{accountId}")
+    void update(User user);
 }

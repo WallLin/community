@@ -2,11 +2,12 @@ package com.kyrie.community.controller;
 
 import com.kyrie.community.entity.Question;
 import com.kyrie.community.entity.User;
-import com.kyrie.community.mapper.QuestionMapper;
+import com.kyrie.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -20,7 +21,22 @@ import javax.servlet.http.HttpServletRequest;
 public class PublishController {
 
     @Autowired
-    private QuestionMapper questionMapper;
+    private QuestionService questionService;
+
+    @GetMapping("/edit/{id}")
+    public String edit(@PathVariable(value = "id") Integer id,
+                       Model model
+    ) {
+        Question question = questionService.findById(id);
+        if (question != null) {
+            model.addAttribute("title", question.getTitle());
+            model.addAttribute("description", question.getDescription());
+            model.addAttribute("tag", question.getTag());
+            model.addAttribute("id", id);
+            return "publish";
+        }
+        return null;
+    }
 
     @GetMapping("/publish")
     public String publish() {
@@ -29,9 +45,10 @@ public class PublishController {
 
     @PostMapping("/publish")
     public String publish(
-            @RequestParam("title") String title,
-            @RequestParam("description") String description,
-            @RequestParam("tag") String tag,
+            @RequestParam(name = "title", required = false) String title,
+            @RequestParam(name = "description", required = false) String description,
+            @RequestParam(name = "tag", required = false) String tag,
+            @RequestParam(name = "id", required = false) Integer id,
             Model model,
             HttpServletRequest request
     ) {
@@ -54,15 +71,8 @@ public class PublishController {
             model.addAttribute("error", "用户未登录，请先登录再发布问题");
             return "publish";
         }
-        Question question = new Question();
-        question.setTitle(title);
-        question.setDescription(description);
-        question.setTag(tag);
-        question.setGmtCreated(System.currentTimeMillis());
-        question.setGmtModified(question.getGmtCreated());
-        question.setCreatorId(user.getId());
 
-        questionMapper.insert(question);
+        questionService.createOrUpdate(id, title, description, tag, user);
 
         return "redirect:/";
     }

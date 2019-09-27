@@ -3,8 +3,8 @@ package com.kyrie.community.controller;
 import com.kyrie.community.dto.AccessTokenDTO;
 import com.kyrie.community.dto.UserDTO;
 import com.kyrie.community.entity.User;
-import com.kyrie.community.mapper.UserMapper;
 import com.kyrie.community.provider.GithubProvider;
+import com.kyrie.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
@@ -34,8 +35,17 @@ public class AuthorizeController {
     private String redirectUri;
 
     @Autowired
-    private UserMapper userMapper;
+    private UserService userService;
 
+
+    /**
+     * 回调 github接口
+     * 获取 github 上用户信息
+     * @param code
+     * @param state
+     * @param response
+     * @return
+     */
     @GetMapping("/callback")
     public String callback(@RequestParam(name = "code") String code, @RequestParam(name = "state") String state, HttpServletResponse response) {
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
@@ -51,15 +61,26 @@ public class AuthorizeController {
             user.setToken(UUID.randomUUID().toString());
             user.setName(userDTO.getName());
             user.setAccountId(String.valueOf(userDTO.getId()));
-            user.setGmtCreated(System.currentTimeMillis());
-            user.setGmtModified(user.getGmtCreated());
             user.setAvatarUrl(userDTO.getAvatarUrl());
-            userMapper.insert(user);
+            userService.createOrUpdate(user);  // 创建或更新用户信息
             //将用户登录状态的信息放到Cookie中
             response.addCookie(new Cookie("token", user.getToken()));
-
             return "redirect:/";
         }
+        return "redirect:/";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request,
+                         HttpServletResponse response
+    ) {
+        // 移除 session
+        request.getSession().removeAttribute("user");
+        // 移除 Cookie
+        Cookie cookie = new Cookie("token", null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+
         return "redirect:/";
     }
 }

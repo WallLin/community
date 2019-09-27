@@ -17,3 +17,7 @@
 [Visual Paradigm](https://www.visual-paradigm.com/cn/)
 
 [Lombok](https://projectlombok.org)
+
+```bash
+mvn -Dmybatis.generator.overwrite=true mybatis-generator:generate
+```
