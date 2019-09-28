@@ -1,13 +1,14 @@
-package com.kyrie.community.entity;
+package com.kyrie.community.dto;
 
+import com.kyrie.community.entity.TbUser;
 import lombok.Data;
 
 /**
  * @author kyrie
- * @date 2019/9/21 - 16:20
+ * @date 2019/9/28 - 11:32
  */
 @Data
-public class Question {
+public class QuestionDTO {
     private Integer id;
     private String title;
     private String description;
@@ -18,5 +19,5 @@ public class Question {
     private Integer viewCount;
     private Integer likeCount;
     private String tag;
-    private User user;
+    private TbUser tbUser;
 }

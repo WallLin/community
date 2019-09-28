@@ -1,7 +1,7 @@
 package com.kyrie.community.controller;
 
-import com.kyrie.community.entity.Question;
-import com.kyrie.community.entity.User;
+import com.kyrie.community.dto.QuestionDTO;
+import com.kyrie.community.entity.TbUser;
 import com.kyrie.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,11 +27,11 @@ public class PublishController {
     public String edit(@PathVariable(value = "id") Integer id,
                        Model model
     ) {
-        Question question = questionService.findById(id);
-        if (question != null) {
-            model.addAttribute("title", question.getTitle());
-            model.addAttribute("description", question.getDescription());
-            model.addAttribute("tag", question.getTag());
+        QuestionDTO questionDTO = questionService.findById(id);
+        if (questionDTO != null) {
+            model.addAttribute("title", questionDTO.getTitle());
+            model.addAttribute("description", questionDTO.getDescription());
+            model.addAttribute("tag", questionDTO.getTag());
             model.addAttribute("id", id);
             return "publish";
         }
@@ -66,7 +66,7 @@ public class PublishController {
             return "publish";
         }
 
-        User user = (User) request.getSession().getAttribute("user");
+        TbUser user = (TbUser) request.getSession().getAttribute("user");
         if (user == null) {
             model.addAttribute("error", "用户未登录，请先登录再发布问题");
             return "publish";

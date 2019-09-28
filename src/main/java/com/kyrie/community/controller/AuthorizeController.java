@@ -2,7 +2,7 @@ package com.kyrie.community.controller;
 
 import com.kyrie.community.dto.AccessTokenDTO;
 import com.kyrie.community.dto.UserDTO;
-import com.kyrie.community.entity.User;
+import com.kyrie.community.entity.TbUser;
 import com.kyrie.community.provider.GithubProvider;
 import com.kyrie.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,14 +57,14 @@ public class AuthorizeController {
         String accessToken = githubProvider.getAccessToken(accessTokenDTO);
         UserDTO userDTO = githubProvider.getUserDTO(accessToken);
         if (userDTO != null) {
-            User user = new User();
-            user.setToken(UUID.randomUUID().toString());
-            user.setName(userDTO.getName());
-            user.setAccountId(String.valueOf(userDTO.getId()));
-            user.setAvatarUrl(userDTO.getAvatarUrl());
-            userService.createOrUpdate(user);  // 创建或更新用户信息
+            TbUser tbUser = new TbUser();
+            tbUser.setToken(UUID.randomUUID().toString());
+            tbUser.setName(userDTO.getName());
+            tbUser.setAccountId(String.valueOf(userDTO.getId()));
+            tbUser.setAvatarUrl(userDTO.getAvatarUrl());
+            userService.createOrUpdate(tbUser);  // 创建或更新用户信息
             //将用户登录状态的信息放到Cookie中
-            response.addCookie(new Cookie("token", user.getToken()));
+            response.addCookie(new Cookie("token", tbUser.getToken()));
             return "redirect:/";
         }
         return "redirect:/";

@@ -1,6 +1,6 @@
 package com.kyrie.community.controller;
 
-import com.kyrie.community.entity.Question;
+import com.kyrie.community.dto.QuestionDTO;
 import com.kyrie.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,8 +21,8 @@ public class QuestionController {
     @GetMapping("/question/{id}")
     public String question(@PathVariable(name = "id") Integer id,
                             Model model) {
-        Question question = questionService.findById(id);
-        model.addAttribute("question", question);
+        QuestionDTO questionDTO = questionService.findById(id);
+        model.addAttribute("question", questionDTO);
         return "question";
     }
 }

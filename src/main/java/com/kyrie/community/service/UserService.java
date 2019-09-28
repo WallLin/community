@@ -1,7 +1,8 @@
 package com.kyrie.community.service;
 
-import com.kyrie.community.entity.User;
-import com.kyrie.community.mapper.UserMapper;
+import com.kyrie.community.entity.TbUser;
+import com.kyrie.community.entity.TbUserExample;
+import com.kyrie.community.mapper.TbUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,26 +13,28 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
     @Autowired
-    private UserMapper userMapper;
+    private TbUserMapper tbUserMapper;
 
     /**
      * 注册或更新用户信息
-     * @param user
+     * @param tbUser
      */
-    public void createOrUpdate(User user) {
-        Integer count = userMapper.findByAccountId(user.getAccountId());
+    public void createOrUpdate(TbUser tbUser) {
+        TbUserExample example = new TbUserExample();
+        example.createCriteria().andAccountIdEqualTo(tbUser.getAccountId());
+        long count = tbUserMapper.countByExample(example);
 
         // 更新用户的修改信息时间
-        user.setGmtModified(System.currentTimeMillis());
+        tbUser.setGmtModified(System.currentTimeMillis());
 
         // 创建新用户
         if (count == 0) {
-            user.setGmtCreated(System.currentTimeMillis());
-            userMapper.insert(user);
+            tbUser.setGmtCreated(System.currentTimeMillis());
+            tbUserMapper.insert(tbUser);
         }
         // 更新用户信息
         else {
-            userMapper.update(user);
+            tbUserMapper.updateByExampleSelective(tbUser, new TbUserExample());
         }
     }
 }

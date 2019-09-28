@@ -19,12 +19,12 @@
         <div class="media" th:each="question:${pagination.questions}">
             <div class="media-left">
                 <a href="#">
-                    <img class="media-object" th:src="${question.user.avatarUrl}" >
+                    <img class="media-object" th:src="${question.tbUser.avatarUrl}" >
                 </a>
             </div>
             <div class="media-body">
                 <h4 class="media-heading" th:text="${question.title}">Spring Boot 快速开发</h4>
-                <span class="text-desc"><span th:text="${question.user.name}"></span>发起了问题 • <span th:text="${question.likeCount}"></span> 人关注 • <span th:text="${question.commentCount}"></span> 个回复 • <span th:text="${question.viewCount}"></span> 次浏览 • <span th:text="${#dates.format(question.gmtCreated, 'yyyy-MM-dd HH:mm')}"></span></span>
+                <span class="text-desc"><span th:text="${question.tbUser.name}"></span>发起了问题 • <span th:text="${question.likeCount}"></span> 人关注 • <span th:text="${question.commentCount}"></span> 个回复 • <span th:text="${question.viewCount}"></span> 次浏览 • <span th:text="${#dates.format(question.gmtCreated, 'yyyy-MM-dd HH:mm')}"></span></span>
             </div>
         </div>
         <nav aria-label="Page navigation" style="float: right">

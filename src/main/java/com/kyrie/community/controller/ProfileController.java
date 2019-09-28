@@ -1,8 +1,7 @@
 package com.kyrie.community.controller;
 
 import com.kyrie.community.dto.PaginationDTO;
-import com.kyrie.community.entity.User;
-import com.kyrie.community.mapper.UserMapper;
+import com.kyrie.community.entity.TbUser;
 import com.kyrie.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,8 +18,6 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Controller
 public class ProfileController {
-    @Autowired
-    private UserMapper userMapper;
 
     @Autowired
     private QuestionService questionService;
@@ -38,7 +35,7 @@ public class ProfileController {
             model.addAttribute("sessions", action);
             model.addAttribute("sessionName", "最新回复");
         }
-        User user = (User) request.getSession().getAttribute("user");
+        TbUser user = (TbUser) request.getSession().getAttribute("user");
 
         PaginationDTO paginationDTO = questionService.listByUserId(user.getId(), page, size);
         model.addAttribute("pagination", paginationDTO);

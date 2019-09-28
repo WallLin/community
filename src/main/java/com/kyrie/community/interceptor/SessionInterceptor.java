@@ -1,7 +1,8 @@
 package com.kyrie.community.interceptor;
 
-import com.kyrie.community.entity.User;
-import com.kyrie.community.mapper.UserMapper;
+import com.kyrie.community.entity.TbUser;
+import com.kyrie.community.entity.TbUserExample;
+import com.kyrie.community.mapper.TbUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -10,6 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * @author kyrie
@@ -19,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 public class SessionInterceptor implements HandlerInterceptor {
 
     @Autowired
-    private UserMapper userMapper;
+    private TbUserMapper tbUserMapper;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -28,9 +30,11 @@ public class SessionInterceptor implements HandlerInterceptor {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("token")) {
                     String token = cookie.getValue();
-                    User user = userMapper.findByToken(token);
-                    if (user != null) {
-                        request.getSession().setAttribute("user", user);
+                    TbUserExample example = new TbUserExample();
+                    example.createCriteria().andTokenEqualTo(token);
+                    List<TbUser> tbUsers = tbUserMapper.selectByExample(example);
+                    if (tbUsers.size() > 0) {
+                        request.getSession().setAttribute("user", tbUsers.get(0));
                     }
                     break;
                 }
