@@ -5,6 +5,9 @@ import com.github.pagehelper.PageInfo;
 import com.kyrie.community.dto.PaginationDTO;
 import com.kyrie.community.dto.QuestionDTO;
 import com.kyrie.community.entity.*;
+import com.kyrie.community.exception.CustomizeErrorCode;
+import com.kyrie.community.exception.CustomizeException;
+import com.kyrie.community.exception.ICustomizeErrorCode;
 import com.kyrie.community.mapper.TbQuestionMapper;
 import com.kyrie.community.mapper.TbUserMapper;
 import org.springframework.beans.BeanUtils;
@@ -109,11 +112,17 @@ public class QuestionService {
     public QuestionDTO findById(Integer id) {
         TbQuestion tbQuestion = tbQuestionMapper.selectByPrimaryKey(id);
         QuestionDTO questionDTO = new QuestionDTO();
-        if (tbQuestion != null) {
+        /*if (tbQuestion != null) {
             TbUser tbUser = tbUserMapper.selectByPrimaryKey(tbQuestion.getCreatorId());
             BeanUtils.copyProperties(tbQuestion, questionDTO);
             questionDTO.setTbUser(tbUser);
+        }*/
+        if (tbQuestion == null) {
+            throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
         }
+        TbUser tbUser = tbUserMapper.selectByPrimaryKey(tbQuestion.getCreatorId());
+        BeanUtils.copyProperties(tbQuestion, questionDTO);
+        questionDTO.setTbUser(tbUser);
         return questionDTO;
     }
 
@@ -134,7 +143,10 @@ public class QuestionService {
         // 更新问题
         if (id != null) {
             tbQuestion.setId(id);
-            tbQuestionMapper.updateByPrimaryKeySelective(tbQuestion);
+            int update = tbQuestionMapper.updateByPrimaryKeySelective(tbQuestion);
+            if (update == 0) {
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            }
         }
 
         // 创建、发布新问题
