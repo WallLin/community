@@ -22,4 +22,11 @@
       view_count = view_count + #{viewCount,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <update id="incCommentCount" parameterType="com.kyrie.community.entity.TbQuestion">
+    update tb_question
+    set
+      comment_count = comment_count + #{commentCount,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
 </mapper>

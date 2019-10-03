@@ -4,10 +4,11 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.kyrie.community.dto.PaginationDTO;
 import com.kyrie.community.dto.QuestionDTO;
-import com.kyrie.community.entity.*;
+import com.kyrie.community.entity.TbQuestion;
+import com.kyrie.community.entity.TbQuestionExample;
+import com.kyrie.community.entity.TbUser;
 import com.kyrie.community.exception.CustomizeErrorCode;
 import com.kyrie.community.exception.CustomizeException;
-import com.kyrie.community.exception.ICustomizeErrorCode;
 import com.kyrie.community.mapper.TbQuestionMapper;
 import com.kyrie.community.mapper.TbUserMapper;
 import org.springframework.beans.BeanUtils;
@@ -74,7 +75,7 @@ public class QuestionService {
      * @param page
      * @param size
      */
-    public PaginationDTO listByUserId(Integer id, Integer page, Integer size) {
+    public PaginationDTO listByUserId(Long id, Integer page, Integer size) {
         Integer offset = (page - 1) * size;
         // PageHelper 使用非常简单，只需要设置页码和每页显示笔数即可
         PageHelper.startPage(offset, size);
@@ -109,7 +110,7 @@ public class QuestionService {
      * @param id
      * @return
      */
-    public QuestionDTO findById(Integer id) {
+    public QuestionDTO findById(Long id) {
         TbQuestion tbQuestion = tbQuestionMapper.selectByPrimaryKey(id);
         QuestionDTO questionDTO = new QuestionDTO();
         /*if (tbQuestion != null) {
@@ -133,7 +134,7 @@ public class QuestionService {
      * @param description
      * @param tag
      */
-    public void createOrUpdate(Integer id, String title, String description, String tag, TbUser tbUser) {
+    public void createOrUpdate(Long id, String title, String description, String tag, TbUser tbUser) {
         TbQuestion tbQuestion = new TbQuestion();
         tbQuestion.setTitle(title);
         tbQuestion.setDescription(description);

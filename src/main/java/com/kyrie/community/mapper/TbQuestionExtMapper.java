@@ -8,4 +8,10 @@ public interface TbQuestionExtMapper {
      * @param tbQuestion
      */
     void incViewCount(TbQuestion tbQuestion);
+
+    /**
+     * 更新问题回复数
+     * @param tbQuestion
+     */
+    void incCommentCount(TbQuestion tbQuestion);
 }

@@ -9,7 +9,7 @@ body {
     border-radius: 10px;
 }
 
-.btn-publish {
+.btn-community {
     float: right;
     margin-bottom: 15px;
 }
@@ -36,4 +36,17 @@ body {
 
 .jumbotron {
     margin: 60px;
+}
+
+.media-body-community {
+    padding: 14px;
+}
+
+.media-object-community {
+    width: 38px;
+    height: 38px;
+}
+
+.textarea-comment {
+    margin: 15px 0;
 }

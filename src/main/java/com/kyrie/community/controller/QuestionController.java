@@ -24,11 +24,11 @@ public class QuestionController {
     private TbQuestionExtMapper tbQuestionExtMapper;
 
     @GetMapping("/question/{id}")
-    public String question(@PathVariable(name = "id") Integer id,
+    public String question(@PathVariable(name = "id") Long id,
                             Model model) {
         TbQuestion tbQuestion = new TbQuestion();
         tbQuestion.setId(id);
-        tbQuestion.setViewCount(1);
+        tbQuestion.setViewCount(1L);
         tbQuestionExtMapper.incViewCount(tbQuestion);
         QuestionDTO questionDTO = questionService.findById(id);
         model.addAttribute("question", questionDTO);
