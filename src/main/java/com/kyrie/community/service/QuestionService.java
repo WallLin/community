@@ -113,11 +113,6 @@ public class QuestionService {
     public QuestionDTO findById(Long id) {
         TbQuestion tbQuestion = tbQuestionMapper.selectByPrimaryKey(id);
         QuestionDTO questionDTO = new QuestionDTO();
-        /*if (tbQuestion != null) {
-            TbUser tbUser = tbUserMapper.selectByPrimaryKey(tbQuestion.getCreatorId());
-            BeanUtils.copyProperties(tbQuestion, questionDTO);
-            questionDTO.setTbUser(tbUser);
-        }*/
         if (tbQuestion == null) {
             throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
         }

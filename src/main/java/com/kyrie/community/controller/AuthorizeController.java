@@ -62,6 +62,7 @@ public class AuthorizeController {
             tbUser.setName(userDTO.getName());
             tbUser.setAccountId(String.valueOf(userDTO.getId()));
             tbUser.setAvatarUrl(userDTO.getAvatarUrl());
+            tbUser.setBio(userDTO.getBio());
             userService.createOrUpdate(tbUser);  // 创建或更新用户信息
             // 将用户登录状态的信息放到Cookie中
             response.addCookie(new Cookie("token", tbUser.getToken()));
