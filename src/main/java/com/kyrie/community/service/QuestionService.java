@@ -9,6 +9,7 @@ import com.kyrie.community.entity.TbQuestionExample;
 import com.kyrie.community.entity.TbUser;
 import com.kyrie.community.exception.CustomizeErrorCode;
 import com.kyrie.community.exception.CustomizeException;
+import com.kyrie.community.mapper.TbQuestionExtMapper;
 import com.kyrie.community.mapper.TbQuestionMapper;
 import com.kyrie.community.mapper.TbUserMapper;
 import org.springframework.beans.BeanUtils;
@@ -30,6 +31,9 @@ public class QuestionService {
 
     @Autowired
     private TbQuestionMapper tbQuestionMapper;
+
+    @Autowired
+    private TbQuestionExtMapper tbQuestionExtMapper;
 
     /**
      * 分页查询
@@ -151,5 +155,16 @@ public class QuestionService {
             tbQuestion.setGmtCreated(System.currentTimeMillis());
             tbQuestionMapper.insertSelective(tbQuestion);
         }
+    }
+
+    /**
+     * 更新浏览数
+     * @param id
+     */
+    public void incViewCount(Long id) {
+        TbQuestion tbQuestion = new TbQuestion();
+        tbQuestion.setId(id);
+        tbQuestion.setViewCount(1L);
+        tbQuestionExtMapper.incViewCount(tbQuestion);
     }
 }

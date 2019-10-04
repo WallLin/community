@@ -14,6 +14,10 @@ body {
     margin-bottom: 15px;
 }
 
+.btn-comment {
+    margin: 10px 0;
+}
+
 .text-desc {
     font-size: 12px;
     font-weight: normal;
@@ -32,6 +36,12 @@ body {
 .community-menu {
     color: #999;
     font-size: 14px;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.community-sp {
+    margin-top: 0;
 }
 
 .jumbotron {
@@ -49,4 +59,54 @@ body {
 
 .textarea-comment {
     margin: 15px 0;
+}
+
+.sub-comments {
+    border: 1px solid #eee;
+    margin-left: 45px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.sub-comments .single {
+    border-bottom: 1px solid #eee;
+    margin: 10px 0;
+}
+
+.media-reply {
+    padding: 0;
+    border-bottom: 1px solid #eee;
+    margin-top: 15px;
+}
+
+.comment-content {
+    margin-top: 10px;
+    color: #666;
+}
+
+.menu {
+    margin-top: 10px;
+}
+
+.menu .icon {
+    margin-right: 20px;
+    color: #999;
+    cursor: pointer;
+}
+
+.menu .active {
+    color: #155faa;
+}
+.menu .icon:hover {
+    color: #155faa;
+}
+
+.menu .datetime {
+    color: #999;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.comment-reply {
+    margin-top: 45px;
 }

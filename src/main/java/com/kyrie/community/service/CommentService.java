@@ -1,16 +1,24 @@
 package com.kyrie.community.service;
 
-import com.kyrie.community.entity.TbComment;
-import com.kyrie.community.entity.TbQuestion;
+import com.kyrie.community.dto.CommentDTO;
+import com.kyrie.community.entity.*;
 import com.kyrie.community.enums.CommentTypeEnum;
 import com.kyrie.community.exception.CustomizeErrorCode;
 import com.kyrie.community.exception.CustomizeException;
 import com.kyrie.community.mapper.TbCommentMapper;
 import com.kyrie.community.mapper.TbQuestionExtMapper;
 import com.kyrie.community.mapper.TbQuestionMapper;
+import com.kyrie.community.mapper.TbUserMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author kyrie
@@ -26,6 +34,9 @@ public class CommentService {
 
     @Autowired
     private TbCommentMapper tbCommentMapper;
+
+    @Autowired
+    private TbUserMapper tbUserMapper;
 
     /**
      * 添加评论
@@ -67,5 +78,45 @@ public class CommentService {
                 tbCommentMapper.insertSelective(tbComment);
             }
         }
+    }
+
+    /**
+     * 根据目标 id 查找相关评论
+     * @param id
+     * @return
+     */
+    public List<CommentDTO> listByTargetId(Long id) {
+        // 获取该问题的所有评论
+        TbCommentExample commentExample = new TbCommentExample();
+        commentExample.createCriteria().andParentIdEqualTo(id).andTypeEqualTo(CommentTypeEnum.QUESTION.getType());
+        // 按回复创建时间倒序排序
+        commentExample.setOrderByClause("gmt_created desc");
+        List<TbComment> comments = tbCommentMapper.selectByExample(commentExample);
+
+        if (comments.size() == 0) {
+            return new ArrayList<>();
+        }
+
+        // 获取去重的评论人
+        // 这里使用了JDK8的新特性，stream 和 lambda 表达式
+        Set<Long> commentators = comments.stream().map(comment -> comment.getCommentator()).collect(Collectors.toSet());
+        List<Long> userIds = new ArrayList<>();
+        userIds.addAll(commentators);
+
+        // 获取评论人并转换为 Map，降低查询的时间复杂度
+        TbUserExample userExample = new TbUserExample();
+        userExample.createCriteria().andIdIn(userIds);
+        List<TbUser> users = tbUserMapper.selectByExample(userExample);
+        Map<Long, TbUser> userMap = users.stream().collect(Collectors.toMap(user -> user.getId(), user -> user));
+
+        // 转换 comment 为 commentDTO
+        List<CommentDTO> commentDTOS = comments.stream().map(comment -> {
+            CommentDTO commentDTO = new CommentDTO();
+            BeanUtils.copyProperties(comment, commentDTO);
+            commentDTO.setUser(userMap.get(comment.getCommentator()));
+            return commentDTO;
+        }).collect(Collectors.toList());
+
+        return commentDTOS;
     }
 }

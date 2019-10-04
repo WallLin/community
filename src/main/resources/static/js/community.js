@@ -4,6 +4,10 @@
 function reply() {
     var parentId = $("#parentId").val();
     var content = $("#content").val();
+    if (!content) {
+        alert("回复内容不能为空~~~");
+        return;
+    }
     $.ajax({
         type: "POST",
         url: "/comment",
@@ -17,7 +21,7 @@ function reply() {
         success: function (data) {
             // 请求成功
             if (data.code == 200) {
-                $("#comment").hide();
+                window.location.reload();
             } else if (data.code == 2003) {
                 // 未登录
                 var isAccepted = confirm(data.message);
@@ -30,4 +34,25 @@ function reply() {
             }
         }
     });
+}
+
+/**
+ * 展开二级评论
+ */
+function collapseComments(e) {
+    var commentId = e.getAttribute("data-id");
+    var comments = $("#comment-" + commentId);
+    // 获取二级评论的展开状态
+    var collapse = e.getAttribute("data-collapse");
+    if (collapse) {
+        // 折叠二级评论
+        e.classList.remove("active");
+        comments.removeClass("in");
+        e.removeAttribute("data-collapse");
+    } else {
+        // 展开二级评论
+        e.classList.add("active"); // 高亮评论图标
+        comments.addClass("in");
+        e.setAttribute("data-collapse", "in");
+    }
 }
