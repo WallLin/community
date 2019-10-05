@@ -42,14 +42,14 @@ public class QuestionService {
      * @return
      */
     public PaginationDTO list(Integer page, Integer size) {
-        Integer offset = (page - 1) * size;
         // PageHelper 使用非常简单，只需要设置页码和每页显示笔数即可
-        PageHelper.startPage(offset, size);
+        PageHelper.startPage(page, size);
         // 设置分页查询条件
         PageInfo<TbQuestion> pageInfo = new PageInfo<>(tbQuestionMapper.selectByExample(new TbQuestionExample()));
-
         // 获取结果
         List<TbQuestion> tbQuestions = pageInfo.getList();
+        // 计算总笔数
+        Integer totalCount = (int) tbQuestionMapper.countByExample(new TbQuestionExample());
 
         List<QuestionDTO> questions = new ArrayList<>();
 
@@ -58,7 +58,6 @@ public class QuestionService {
             BeanUtils.copyProperties(tbQuestion, questionDTO);
             questions.add(questionDTO);
         }
-        Integer totalCount = (int) tbQuestionMapper.countByExample(new TbQuestionExample());
 
         if (questions != null) {
             for (QuestionDTO question : questions) {
@@ -80,21 +79,22 @@ public class QuestionService {
      * @param size
      */
     public PaginationDTO listByUserId(Long id, Integer page, Integer size) {
-        Integer offset = (page - 1) * size;
         // PageHelper 使用非常简单，只需要设置页码和每页显示笔数即可
-        PageHelper.startPage(offset, size);
+        // 起始页码从 1 开始
+        PageHelper.startPage(page, size);  // startPage 紧接后面的第一个查询语句才有分页功能
         // 设置分页查询条件
         TbQuestionExample example = new TbQuestionExample();
         example.createCriteria().andCreatorIdEqualTo(id);
         PageInfo<TbQuestion> pageInfo = new PageInfo<>(tbQuestionMapper.selectByExample(example));
+        // 计算总笔数
+        Integer totalCount = (int) tbQuestionMapper.countByExample(example);
         List<TbQuestion> tbQuestions = pageInfo.getList();
         List<QuestionDTO> questions = new ArrayList<>();
         for (TbQuestion tbQuestion : tbQuestions) {
             QuestionDTO questionDTO = new QuestionDTO();
-            BeanUtils.copyProperties(questionDTO, tbQuestion);
+            BeanUtils.copyProperties(tbQuestion, questionDTO);
             questions.add(questionDTO);
         }
-        Integer totalCount = (int) tbQuestionMapper.countByExample(new TbQuestionExample());
 
         if (questions != null) {
             for (QuestionDTO question : questions) {

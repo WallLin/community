@@ -1,9 +1,7 @@
 /**
- * 回复问题
+ * 回复功能（包括回复问题、回复评论）
  */
-function reply() {
-    var parentId = $("#parentId").val();
-    var content = $("#content").val();
+function reply(parentId, content, type) {
     if (!content) {
         alert("回复内容不能为空~~~");
         return;
@@ -15,7 +13,7 @@ function reply() {
         data: JSON.stringify ({
             "parentId": parentId,
             "content": content,
-            "type": 1
+            "type": type
         }),
         dataType: "json",
         success: function (data) {
@@ -35,6 +33,25 @@ function reply() {
         }
     });
 }
+
+/**
+ * 回复问题
+ */
+function replyQuestion() {
+    var parentId = $("#parentId").val();
+    var content = $("#content").val();
+    reply(parentId, content, 1);
+}
+
+/**
+ * 回复评论
+ */
+function replyComment(e) {
+    var parentId = e.getAttribute("data-id");
+    var content = $("#content-" + parentId).val();
+    reply(parentId, content, 2);
+}
+
 
 /**
  * 展开二级评论
