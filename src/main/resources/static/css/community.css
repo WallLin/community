@@ -68,6 +68,10 @@ body {
     margin-bottom: 20px;
 }
 
+.sub-comment {
+    margin-top: 20px;
+}
+
 .sub-comments .single {
     border-bottom: 1px solid #eee;
     margin: 10px 0;
@@ -94,10 +98,11 @@ body {
     cursor: pointer;
 }
 
-.menu .active {
+.menu .icon:hover {
     color: #155faa;
 }
-.menu .icon:hover {
+
+.menu .active {
     color: #155faa;
 }
 
@@ -109,4 +114,9 @@ body {
 
 .comment-reply {
     margin-top: 45px;
+}
+
+.comment-count {
+    font-family: candara, "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "WenQuanYi Micro Hei", "Microsoft Yahei", sans-serif, -apple-system;
+    font-size: 20px;
 }

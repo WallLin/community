@@ -1,20 +1,21 @@
 package com.kyrie.community.controller;
 
 import com.kyrie.community.dto.CommentCreateDTO;
+import com.kyrie.community.dto.CommentDTO;
 import com.kyrie.community.dto.ResultDTO;
 import com.kyrie.community.entity.TbComment;
 import com.kyrie.community.entity.TbUser;
+import com.kyrie.community.enums.CommentTypeEnum;
 import com.kyrie.community.exception.CustomizeErrorCode;
 import com.kyrie.community.service.CommentService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author kyrie
@@ -50,5 +51,12 @@ public class CommentController {
         tbComment.setGmtModified(System.currentTimeMillis());
         commentService.insert(tbComment);
         return ResultDTO.okOf();
+    }
+
+    @RequestMapping(value = "/comment/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResultDTO<List<CommentDTO>> subComment(@PathVariable(name = "id") Long id) {
+        List<CommentDTO> comments = commentService.listByTargetId(id, CommentTypeEnum.COMMENT);
+        return ResultDTO.okOf(comments);
     }
 }

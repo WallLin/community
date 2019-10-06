@@ -2,6 +2,7 @@ package com.kyrie.community.controller;
 
 import com.kyrie.community.dto.CommentDTO;
 import com.kyrie.community.dto.QuestionDTO;
+import com.kyrie.community.enums.CommentTypeEnum;
 import com.kyrie.community.service.CommentService;
 import com.kyrie.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class QuestionController {
     public String question(@PathVariable(name = "id") Long id, Model model) {
         questionService.incViewCount(id);
         QuestionDTO questionDTO = questionService.findById(id);
-        List<CommentDTO> comments = commentService.listByTargetId(id);
+        List<CommentDTO> comments = commentService.listByTargetId(id, CommentTypeEnum.QUESTION);
         model.addAttribute("question", questionDTO);
         model.addAttribute("comments", comments);
         return "question";

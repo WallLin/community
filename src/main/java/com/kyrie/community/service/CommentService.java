@@ -5,10 +5,7 @@ import com.kyrie.community.entity.*;
 import com.kyrie.community.enums.CommentTypeEnum;
 import com.kyrie.community.exception.CustomizeErrorCode;
 import com.kyrie.community.exception.CustomizeException;
-import com.kyrie.community.mapper.TbCommentMapper;
-import com.kyrie.community.mapper.TbQuestionExtMapper;
-import com.kyrie.community.mapper.TbQuestionMapper;
-import com.kyrie.community.mapper.TbUserMapper;
+import com.kyrie.community.mapper.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +31,9 @@ public class CommentService {
 
     @Autowired
     private TbCommentMapper tbCommentMapper;
+
+    @Autowired
+    private TbCommentExtMapper tbCommentExtMapper;
 
     @Autowired
     private TbUserMapper tbUserMapper;
@@ -75,6 +75,13 @@ public class CommentService {
                 if (comment == null) {
                     throw new CustomizeException(CustomizeErrorCode.COMMENT_NOT_FOUND);
                 }
+
+                // 增加评论的回复数
+                TbComment tbComment1 = new TbComment();
+                tbComment1.setId(comment.getId());
+                tbComment1.setCommentCount(1L);
+                tbCommentExtMapper.incCommentCount(tbComment1);
+
                 tbCommentMapper.insertSelective(tbComment);
             }
         }
@@ -83,12 +90,13 @@ public class CommentService {
     /**
      * 根据目标 id 查找相关评论
      * @param id
+     * @param type
      * @return
      */
-    public List<CommentDTO> listByTargetId(Long id) {
+    public List<CommentDTO> listByTargetId(Long id, CommentTypeEnum type) {
         // 获取该问题的所有评论
         TbCommentExample commentExample = new TbCommentExample();
-        commentExample.createCriteria().andParentIdEqualTo(id).andTypeEqualTo(CommentTypeEnum.QUESTION.getType());
+        commentExample.createCriteria().andParentIdEqualTo(id).andTypeEqualTo(type.getType());
         // 按回复创建时间倒序排序
         commentExample.setOrderByClause("gmt_created desc");
         List<TbComment> comments = tbCommentMapper.selectByExample(commentExample);
