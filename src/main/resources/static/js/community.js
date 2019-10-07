@@ -122,3 +122,22 @@ function collapseComments(e) {
         }
     }
 }
+
+/**
+ * 给标签赋值
+ * @param tag
+ */
+function selectTag(e) {
+    var tag = e.getAttribute("data-id");
+    var tagsValue = $("#tag").val();
+    // 如果 input 里面的值为空
+    if (!tagsValue) {
+        $("#tag").val(tag);
+    } else {
+        if (tagsValue.indexOf(tag) == -1) { // 判断选中的标签是否重复
+            $("#tag").val(tagsValue + ',' + tag);
+        }
+    }
+
+
+}

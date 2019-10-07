@@ -12,12 +12,14 @@ import com.kyrie.community.exception.CustomizeException;
 import com.kyrie.community.mapper.TbQuestionExtMapper;
 import com.kyrie.community.mapper.TbQuestionMapper;
 import com.kyrie.community.mapper.TbUserMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author kyrie
@@ -45,11 +47,14 @@ public class QuestionService {
         // PageHelper 使用非常简单，只需要设置页码和每页显示笔数即可
         PageHelper.startPage(page, size);
         // 设置分页查询条件
-        PageInfo<TbQuestion> pageInfo = new PageInfo<>(tbQuestionMapper.selectByExample(new TbQuestionExample()));
+        TbQuestionExample example = new TbQuestionExample();
+        // 按问题创建时间倒序排序
+        example.setOrderByClause("gmt_created desc");
+        PageInfo<TbQuestion> pageInfo = new PageInfo<>(tbQuestionMapper.selectByExample(example));
         // 获取结果
         List<TbQuestion> tbQuestions = pageInfo.getList();
         // 计算总笔数
-        Integer totalCount = (int) tbQuestionMapper.countByExample(new TbQuestionExample());
+        Integer totalCount = (int) tbQuestionMapper.countByExample(example);
 
         List<QuestionDTO> questions = new ArrayList<>();
 
@@ -85,6 +90,8 @@ public class QuestionService {
         // 设置分页查询条件
         TbQuestionExample example = new TbQuestionExample();
         example.createCriteria().andCreatorIdEqualTo(id);
+        // 按问题创建时间倒序排序
+        example.setOrderByClause("gmt_created desc");
         PageInfo<TbQuestion> pageInfo = new PageInfo<>(tbQuestionMapper.selectByExample(example));
         // 计算总笔数
         Integer totalCount = (int) tbQuestionMapper.countByExample(example);
@@ -166,5 +173,30 @@ public class QuestionService {
         tbQuestion.setId(id);
         tbQuestion.setViewCount(1L);
         tbQuestionExtMapper.incViewCount(tbQuestion);
+    }
+
+    /**
+     * 根据标签 tag 查找相关问题
+     * @param questionDTO
+     * @return
+     */
+    public List<QuestionDTO> selectRelated(QuestionDTO questionDTO) {
+        String tag = questionDTO.getTag();
+        if (StringUtils.isBlank(tag)) {
+            return new ArrayList<>();
+        }
+        // 将 tag 中的 ',' 换成 '|'
+        String regexp = tag.replace(',', '|'); // 正则表达式
+        TbQuestion tbQuestion = new TbQuestion();
+        tbQuestion.setId(questionDTO.getId());
+        tbQuestion.setTag(regexp);
+        List<TbQuestion> tbQuestions = tbQuestionExtMapper.selectRelated(tbQuestion);
+
+        List<QuestionDTO> questionDTOS = tbQuestions.stream().map(q -> {
+            QuestionDTO questionDTO1 = new QuestionDTO();
+            BeanUtils.copyProperties(q, questionDTO1);
+            return questionDTO1;
+        }).collect(Collectors.toList());
+        return questionDTOS;
     }
 }

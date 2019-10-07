@@ -1,27 +1,24 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>发布 - Kyrie Community</title>
-    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="/css/bootstrap-theme.min.css"/>
-    <link rel="stylesheet" href="/css/community.css"/>
-    <script src="/js/jquery-3.4.1.min.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
+    <div th:insert="~{header.html :: head}"></div>
+    <title>提问 - Kyrie Community</title>
 </head>
 <body>
 <div th:insert="~{navigation :: nav}"></div>
 
 <div class="container main">
+    <!--左边栏-->
     <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12" >
         <h3><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>发起</h3>
         <hr>
         <p th:if="${error} != null" th:text="${error}" class="alert alert-danger"></p>
+        <!--问题内容-->
         <form action="/publish" method="post">
             <input type="hidden" id="id" name="id" th:value="${id}">
             <div class="form-group">
                 <label for="title">问题标题（简单扼要）:</label>
-                <input type="text" class="form-control" id="title" name="title" placeholder="问题标题" th:value="${title}">
+                <input autocomplete="off" type="text" class="form-control" id="title" name="title" placeholder="问题标题" th:value="${title}">
             </div>
             <div class="form-group">
                 <label for="description">问题补充 (必填，请参照右侧提示):</label>
@@ -29,11 +26,33 @@
             </div>
             <div class="form-group">
                 <label for="tag">添加标签</label>
-                <input type="text" class="form-control" id="tag" name="tag" placeholder="添加新标签，以逗号隔开" th:value="${tag}">
+                <input type="text" class="form-control" id="tag" name="tag" placeholder="标签, 如Java(用逗号,分隔)" autocomplete="off" th:value="${tag}">
+            </div>
+
+            <!--标签页-->
+            <div id="showTag" style="display: none">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" th:class="${selectCategoryStat.first ? 'active' : ''}" th:each="selectCategory,selectCategoryStat: ${tags}">
+                        <a th:href="${'#' + selectCategory.categoryName}" role="tab" data-toggle="tab"><span th:text="${selectCategory.categoryName}"></span></a>
+                    </li>
+                </ul>
+
+                <div class="tab-content publish-tag">
+                    <div role="tabpanel" th:class="${selectCategoryStat.first ? 'tab-pane active' : 'tab-pane'}" th:id="${selectCategory.categoryName}" th:each="selectCategory : ${tags}">
+                        <span class="label label-default question-tag" onclick="selectTag(this)" th:data-id="${selectTag}" th:each="selectTag : ${selectCategory.tags}">
+                            <span class="fa fa-tags" th:text="${' '+selectTag}"></span>
+                            <!--<span th:text="${selectTag}"></span>-->
+                        </span>
+                    </div>
+                </div>
+
             </div>
             <button type="submit" class="btn btn-success btn-community">发布</button>
         </form>
+
     </div>
+
+    <!--右边栏-->
     <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
         <h3>问题发起指南</h3> <br>
         <li>问题标题: 请用精简的语言描述您发布的问题，不超过25字</li>
@@ -43,5 +62,13 @@
         <li>选择标签: 选择一个或者多个合适的标签，以逗号隔开，每个标签不超过10个字</li>
     </div>
 </div>
+
+<script>
+    $(document).ready(function(){
+        $("#tag").focus(function(){
+            $("#showTag").show();
+        });
+    });
+</script>
 </body>
 </html>

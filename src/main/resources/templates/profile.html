@@ -1,22 +1,18 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title th:text="${sessionName}"></title>
-    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="/css/bootstrap-theme.min.css"/>
-    <link rel="stylesheet" href="/css/community.css"/>
-    <script src="/js/jquery-3.4.1.min.js"></script>
-    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+    <div th:insert="~{header.html :: head}"></div>
+    <title>个人 - Kyrie Community</title>
 </head>
 <body>
 <div th:insert="~{navigation :: nav}"></div>
 
 <div class="container main profile">
+    <!--左边-->
     <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12" >
         <h3><span th:text="${sessionName}"></span></h3>
         <hr>
-        <div class="media" th:each="question:${pagination.questions}">
+        <!--<div class="media" th:each="question:${pagination.questions}">
             <div class="media-left">
                 <a href="#">
                     <img class="media-object" th:src="${question.tbUser.avatarUrl}" >
@@ -26,7 +22,37 @@
                 <h4 class="media-heading" th:text="${question.title}">Spring Boot 快速开发</h4>
                 <span class="text-desc"><span th:text="${question.tbUser.name}"></span>发起了问题 • <span th:text="${question.likeCount}"></span> 人关注 • <span th:text="${question.commentCount}"></span> 个回复 • <span th:text="${question.viewCount}"></span> 次浏览 • <span th:text="${#dates.format(question.gmtCreated, 'yyyy-MM-dd HH:mm')}"></span></span>
             </div>
+        </div>-->
+        <div th:each="question:${pagination.questions}">
+            <div class="media col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="media-left">
+                    <a href="#">
+                        <img class="media-object" th:src="${question.tbUser.avatarUrl}" >
+                    </a>
+                </div>
+                <div class="media-body" >
+                    <a class="question-href" th:href="@{'/question/' + ${question.id}}">
+                        <h4 class="media-heading" th:text="${question.title}" ></h4>
+                    </a>
+                    <span class="text-desc">
+                    <span th:text="${question.tbUser.name}"></span>发起了问题 •
+                    <span th:text="${question.likeCount}"></span> 人关注 •
+                    <span th:text="${question.commentCount}"></span> 个回复 •
+                    <span th:text="${question.viewCount}"></span> 次浏览 •
+                    <span th:text="${#dates.format(question.gmtCreated, 'yyyy-MM-dd HH:mm')}"></span>
+                    <span class="pull-right">
+                        <a th:href="'/edit/' + ${question.id}" class="profile-edit"
+                           th:if="${session.user != null && session.user.id == question.creatorId}">
+                            <span class="fa fa-edit" aria-hidden="true"></span> 编辑
+                        </a>
+                    </span>
+                </span>
+                </div>
+            </div>
+            <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 index-hr">
         </div>
+
+        <!--分页-->
         <nav aria-label="Page navigation" style="float: right">
             <ul class="pagination">
                 <li th:if="${pagination.showFirstPage} == true">
@@ -53,6 +79,8 @@
             </ul>
         </nav>
     </div>
+
+    <!--右边-->
     <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
         <div class="list-group list">
             <a href="/profile/questions" class="list-group-item" th:classappend="${sessions} == 'questions' ? 'active' : ''">我的提问</a>

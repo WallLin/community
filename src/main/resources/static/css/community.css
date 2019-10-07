@@ -1,7 +1,7 @@
 body {
     line-height: 24px;
     font-size: 16px;
-    background-image: url("/images/bg5.jpg");
+    background-image: url("/images/bg.jpg");
 }
 
 .main {
@@ -119,4 +119,64 @@ body {
 .comment-count {
     font-family: candara, "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "WenQuanYi Micro Hei", "Microsoft Yahei", sans-serif, -apple-system;
     font-size: 20px;
+}
+
+.question-tag {
+    margin-right: 5px;
+}
+
+.question-related {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.related-href {
+    cursor: pointer;
+    color: #155faa;
+    text-decoration: none;
+    line-height: 24px;
+    font-size: 14px;
+    font-family: candara,"Helvetica Neue",Helvetica,Arial,"PingFang SC","Hiragino Sans GB","WenQuanYi Micro Hei","Microsoft Yahei",sans-serif, -apple-system;
+}
+
+.question-href {
+    cursor: pointer;
+    color: #155faa;
+    text-decoration: none;
+    font-family: candara,"Helvetica Neue",Helvetica,Arial,"PingFang SC","Hiragino Sans GB","WenQuanYi Micro Hei","Microsoft Yahei",sans-serif, -apple-system;
+}
+
+.community-font {
+    font-family: candara,"Helvetica Neue",Helvetica,Arial,"PingFang SC","Hiragino Sans GB","WenQuanYi Micro Hei","Microsoft Yahei",sans-serif, -apple-system;
+}
+
+.community-avatar-a {
+    padding: 10px;
+}
+
+.community-avatar-img {
+    width: 32px;
+    height: 32px;
+    margin: 0 0;
+}
+
+.index-hr {
+    margin: 10px 0;
+}
+
+.nav-dropdown-a {
+    text-align: center;
+}
+
+.publish-tag .label {
+    white-space: normal;
+    display: inline-block;
+    margin: 10px 5px;
+}
+
+.profile-edit {
+    color: #999;
+    font-size: 14px;
+    margin-bottom: 10px;
 }

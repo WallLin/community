@@ -1,16 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <div th:insert="~{header.html :: head}"></div>
     <title th:text="${question.title}"></title>
-    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="/css/bootstrap-theme.min.css"/>
-    <link rel="stylesheet" href="/css/community.css"/>
-    <link rel="stylesheet" href="/plugins/font-awesome-4.7.0/css/font-awesome.min.css"/>
-    <script src="/js/jquery-3.4.1.min.js"></script>
-    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
-    <script src="/js/community.js" type="application/javascript"></script>
-    <script src="/js/moment.js" type="application/javascript"></script>
 </head>
 <body>
 <div th:insert="~{navigation :: nav}"></div>
@@ -27,14 +19,28 @@
             阅读数：<span th:text="${question.viewCount}"></span>
             </span>
             <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <!-- 问题描述 -->
             <div th:text="${question.description}" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 desc
             </div>
             <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <a th:href="'/edit/' + ${question.id}" class="community-menu"
-               th:if="${session.user != null && session.user.id == question.creatorId}">
-                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> 编辑
-            </a>
+
+            <!-- 标签 -->
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <span class="label label-default question-tag" th:each="tag:${question.tag.split(',')}">
+                    <span class="fa fa-tags"></span>
+                    <span th:text="${tag}"></span>
+                </span>
+            </div>
+            <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
+            <!-- 编辑 -->
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <a th:href="'/edit/' + ${question.id}" class="community-menu"
+                   th:if="${session.user != null && session.user.id == question.creatorId}">
+                    <span class="fa fa-edit" aria-hidden="true"></span> 编辑
+                </a>
+            </div>
         </div>
 
         <!-- 回复内容 -->
@@ -72,7 +78,7 @@
                     </div>
                 </div>
                 <!-- 二级评论 -->
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 sub-comments collapse" th:id="${'comment-' + comment.id}">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 sub-comments collapse" style="width: 98%" th:id="${'comment-' + comment.id}">
 
                     <!--<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 single">
                         <div class="media">
@@ -135,7 +141,19 @@
             </div>
         </div>
         <hr>
+
+        <!-- 站长微信 -->
+        <h4 style="margin-top: 38px">站长微信</h4>
+        <img src="/images/WeChat.jpg" class="img-thumbnail">
+        <hr>
+
+        <!-- 相关问题 -->
         <h4 style="margin-top: 38px">相关问题</h4>
+        <ul class="question-related">
+            <li th:each="relatedProblem:${relatedProblems}">
+                <a class="related-href" th:href="@{'/question/' + ${relatedProblem.id}}" th:text="${relatedProblem.title}"></a>
+            </li>
+        </ul>
     </div>
 </div>
 

@@ -1,8 +1,10 @@
 package com.kyrie.community.controller;
 
+import com.kyrie.community.cache.TagCache;
 import com.kyrie.community.dto.QuestionDTO;
 import com.kyrie.community.entity.TbUser;
 import com.kyrie.community.service.QuestionService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,13 +35,15 @@ public class PublishController {
             model.addAttribute("description", questionDTO.getDescription());
             model.addAttribute("tag", questionDTO.getTag());
             model.addAttribute("id", id);
+            model.addAttribute("tags", TagCache.getTags());
             return "publish";
         }
         return null;
     }
 
     @GetMapping("/publish")
-    public String publish() {
+    public String publish(Model model) {
+        model.addAttribute("tags", TagCache.getTags());
         return "publish";
     }
 
@@ -52,9 +56,16 @@ public class PublishController {
             Model model,
             HttpServletRequest request
     ) {
+        TbUser user = (TbUser) request.getSession().getAttribute("user");
+        if (user == null) {
+            model.addAttribute("error", "用户未登录，请先登录再发布问题");
+            return "publish";
+        }
+
         model.addAttribute("title", title);
         model.addAttribute("description", description);
         model.addAttribute("tag", tag);
+        model.addAttribute("tags", TagCache.getTags()); // 获取所有标签库
         if (title == null || title == "") {
             model.addAttribute("error", "问题标题不能为空！");
             return "publish";
@@ -66,9 +77,8 @@ public class PublishController {
             return "publish";
         }
 
-        TbUser user = (TbUser) request.getSession().getAttribute("user");
-        if (user == null) {
-            model.addAttribute("error", "用户未登录，请先登录再发布问题");
+        if (StringUtils.isNotBlank(TagCache.isInvalid(tag))) {
+            model.addAttribute("error", "输入非法标签：" + TagCache.isInvalid(tag));
             return "publish";
         }
 
