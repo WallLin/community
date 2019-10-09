@@ -1,7 +1,10 @@
 package com.kyrie.community.interceptor;
 
+import com.kyrie.community.entity.TbNotificationExample;
 import com.kyrie.community.entity.TbUser;
 import com.kyrie.community.entity.TbUserExample;
+import com.kyrie.community.enums.NotificationStatusEnum;
+import com.kyrie.community.mapper.TbNotificationMapper;
 import com.kyrie.community.mapper.TbUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,9 @@ public class SessionInterceptor implements HandlerInterceptor {
 
     @Autowired
     private TbUserMapper tbUserMapper;
+    
+    @Autowired
+    private TbNotificationMapper tbNotificationMapper;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -35,6 +41,12 @@ public class SessionInterceptor implements HandlerInterceptor {
                     List<TbUser> tbUsers = tbUserMapper.selectByExample(example);
                     if (tbUsers.size() > 0) {
                         request.getSession().setAttribute("user", tbUsers.get(0));
+                        // 查询该用户的未读通知总数
+                        TbNotificationExample notificationExample = new TbNotificationExample();
+                        notificationExample.createCriteria().andReceiverIdEqualTo(tbUsers.get(0).getId())
+                                .andStatusEqualTo(NotificationStatusEnum.UNREAD.getStatus());
+                        long unReadCount = tbNotificationMapper.countByExample(notificationExample);
+                        request.getSession().setAttribute("unReadCount", unReadCount);
                     }
                     break;
                 }

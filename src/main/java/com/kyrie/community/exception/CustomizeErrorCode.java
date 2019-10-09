@@ -12,6 +12,8 @@ public enum CustomizeErrorCode implements ICustomizeErrorCode {
     TYPE_PARAM_WRONG(2005, "未选中任何问题或评论进行回复"),
     COMMENT_NOT_FOUND(2006, "回复的评论不存在了，要不要换个试试？"),
     CONTENT_NO_EMPTY(2007, "评论内容不能为空~~~"),
+    NOTIFICATION_NOT_FOUND(2008, "通知丢了，被意大利炮轰走了~~~"),
+    NOTIFICATION_WRONG(2009, "兄弟，你这是偷窥呢~~~"),
     ;
 
     CustomizeErrorCode(Integer code, String message) {

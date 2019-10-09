@@ -70,8 +70,8 @@ public class QuestionService {
                 question.setTbUser(tbUser);
             }
         }
-        PaginationDTO pagination = new PaginationDTO();
-        pagination.setQuestions(questions);
+        PaginationDTO<QuestionDTO> pagination = new PaginationDTO<>();
+        pagination.setData(questions);
         pagination.setPagination(totalCount, page, size);
 
         return pagination;
@@ -109,8 +109,8 @@ public class QuestionService {
                 question.setTbUser(tbUser);
             }
         }
-        PaginationDTO pagination = new PaginationDTO();
-        pagination.setQuestions(questions);
+        PaginationDTO<QuestionDTO> pagination = new PaginationDTO<>();
+        pagination.setData(questions);
         pagination.setPagination(totalCount, page, size);
 
         return pagination;

@@ -3,6 +3,7 @@ package com.kyrie.community.service;
 import com.kyrie.community.dto.CommentDTO;
 import com.kyrie.community.entity.*;
 import com.kyrie.community.enums.CommentTypeEnum;
+import com.kyrie.community.enums.NotificationTypeEnum;
 import com.kyrie.community.exception.CustomizeErrorCode;
 import com.kyrie.community.exception.CustomizeException;
 import com.kyrie.community.mapper.*;
@@ -38,12 +39,16 @@ public class CommentService {
     @Autowired
     private TbUserMapper tbUserMapper;
 
+    @Autowired
+    private TbNotificationMapper tbNotificationMapper;
+
     /**
      * 添加评论
      * @param tbComment
+     * @param user
      */
     @Transactional
-    public void insert(TbComment tbComment) {
+    public void insert(TbComment tbComment, TbUser user) {
         // 未选中任何问题或评论进行回复
         if (tbComment.getParentId() == null || tbComment.getParentId() == 0) {
             throw new CustomizeException(CustomizeErrorCode.TARGET_PARAM_NOT_FOUND);
@@ -66,6 +71,9 @@ public class CommentService {
                 // 增加问题的回复数
                 tbQuestion.setCommentCount(1L);
                 tbQuestionExtMapper.incCommentCount(tbQuestion);
+
+                // 创建通知
+                createNotification(tbComment, user, tbQuestion, NotificationTypeEnum.QUESTION.getType());
             }
 
             // 回复评论
@@ -83,8 +91,33 @@ public class CommentService {
                 tbCommentExtMapper.incCommentCount(tbComment1);
 
                 tbCommentMapper.insertSelective(tbComment);
+
+                // 创建通知
+                TbQuestion tbQuestion = tbQuestionMapper.selectByPrimaryKey(comment.getParentId());
+                createNotification(tbComment, user, tbQuestion, NotificationTypeEnum.COMMENT.getType());
             }
         }
+    }
+
+    /**
+     * 创建通知
+     * @param tbComment
+     * @param user
+     * @param tbQuestion
+     * @param type
+     */
+    public void createNotification(TbComment tbComment, TbUser user, TbQuestion tbQuestion, Integer type) {
+        TbNotification tbNotification = new TbNotification();
+        tbNotification.setNotifierId(tbComment.getCommentator()); // 通知者 id
+        tbNotification.setNotifierName(user.getName());           // 通知者名称
+        tbNotification.setReceiverId(tbQuestion.getCreatorId());
+        tbNotification.setOuterId(tbQuestion.getId());
+        tbNotification.setOuterTitle(tbQuestion.getTitle());
+        tbNotification.setType(type);             // 通知类型：问题或评论
+        tbNotification.setStatus(1);           // 通知状态：是否已读  '1' : 表示未读  '0' : 表示已读
+        tbNotification.setGmtCreated(System.currentTimeMillis());
+
+        tbNotificationMapper.insert(tbNotification);
     }
 
     /**

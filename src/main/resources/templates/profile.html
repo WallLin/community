@@ -10,21 +10,11 @@
 <div class="container main profile">
     <!--左边-->
     <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12" >
-        <h3><span th:text="${sessionName}"></span></h3>
+        <h3><span th:text="${sectionName}"></span></h3>
         <hr>
-        <!--<div class="media" th:each="question:${pagination.questions}">
-            <div class="media-left">
-                <a href="#">
-                    <img class="media-object" th:src="${question.tbUser.avatarUrl}" >
-                </a>
-            </div>
-            <div class="media-body">
-                <h4 class="media-heading" th:text="${question.title}">Spring Boot 快速开发</h4>
-                <span class="text-desc"><span th:text="${question.tbUser.name}"></span>发起了问题 • <span th:text="${question.likeCount}"></span> 人关注 • <span th:text="${question.commentCount}"></span> 个回复 • <span th:text="${question.viewCount}"></span> 次浏览 • <span th:text="${#dates.format(question.gmtCreated, 'yyyy-MM-dd HH:mm')}"></span></span>
-            </div>
-        </div>-->
-        <div th:each="question:${pagination.questions}">
-            <div class="media col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div>
+            <!--我的问题-->
+            <div th:each="question:${pagination.data}" class="media col-lg-12 col-md-12 col-sm-12 col-xs-12" th:if="${section == 'questions'}">
                 <div class="media-left">
                     <a href="#">
                         <img class="media-object" th:src="${question.tbUser.avatarUrl}" >
@@ -35,21 +25,35 @@
                         <h4 class="media-heading" th:text="${question.title}" ></h4>
                     </a>
                     <span class="text-desc">
-                    <span th:text="${question.tbUser.name}"></span>发起了问题 •
-                    <span th:text="${question.likeCount}"></span> 人关注 •
-                    <span th:text="${question.commentCount}"></span> 个回复 •
-                    <span th:text="${question.viewCount}"></span> 次浏览 •
-                    <span th:text="${#dates.format(question.gmtCreated, 'yyyy-MM-dd HH:mm')}"></span>
-                    <span class="pull-right">
-                        <a th:href="'/edit/' + ${question.id}" class="profile-edit"
-                           th:if="${session.user != null && session.user.id == question.creatorId}">
-                            <span class="fa fa-edit" aria-hidden="true"></span> 编辑
-                        </a>
+                        <span th:text="${question.tbUser.name}"></span>发起了问题 •
+                        <span th:text="${question.likeCount}"></span> 人关注 •
+                        <span th:text="${question.commentCount}"></span> 个回复 •
+                        <span th:text="${question.viewCount}"></span> 次浏览 •
+                        <span th:text="${#dates.format(question.gmtCreated, 'yyyy-MM-dd HH:mm')}"></span>
+                        <span class="pull-right">
+                            <a th:href="'/edit/' + ${question.id}" class="profile-edit"
+                               th:if="${session.user != null && session.user.id == question.creatorId}">
+                                <span class="fa fa-edit" aria-hidden="true"></span> 编辑
+                            </a>
+                        </span>
                     </span>
-                </span>
                 </div>
+                <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 index-hr">
             </div>
-            <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 index-hr">
+            <!--最新回复-->
+            <div th:each="notification:${pagination.data}" class="media col-lg-12 col-md-12 col-sm-12 col-xs-12" th:if="${section == 'replies'}">
+                <div class="media-body" >
+                    <p>
+                        <span th:text="${notification.notifierName + ' ' + notification.typeName + ' '}"></span>
+                        <a th:href="@{'/notification/' + ${notification.id}}"><span th:text="${notification.outerTitle}"></span></a>
+                        <span class="label label-default" th:if="${notification.status == 1}">未读</span>
+                    </p>
+                    <p>
+                        <span class="text-desc" th:text="${#dates.format(notification.gmtCreated, 'yyyy-MM-dd HH:mm')}"></span>
+                    </p>
+                </div>
+                <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 index-hr">
+            </div>
         </div>
 
         <!--分页-->
@@ -83,10 +87,10 @@
     <!--右边-->
     <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
         <div class="list-group list">
-            <a href="/profile/questions" class="list-group-item" th:classappend="${sessions} == 'questions' ? 'active' : ''">我的提问</a>
-            <a href="/profile/replies" class="list-group-item" th:classappend="${sessions} == 'replies' ? 'active' : ''">
+            <a href="/profile/questions" class="list-group-item" th:classappend="${section} == 'questions' ? 'active' : ''">我的提问</a>
+            <a href="/profile/replies" class="list-group-item" th:classappend="${section} == 'replies' ? 'active' : ''">
                 最新回复
-                <span class="badge">14</span>
+                <span class="badge" th:if="${session.user} != null" th:text="${session.unReadCount}"></span>
             </a>
         </div>
     </div>

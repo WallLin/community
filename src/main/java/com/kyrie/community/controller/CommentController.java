@@ -48,10 +48,15 @@ public class CommentController {
         tbComment.setCommentator(user.getId());
         tbComment.setGmtCreated(System.currentTimeMillis());
         tbComment.setGmtModified(System.currentTimeMillis());
-        commentService.insert(tbComment);
+        commentService.insert(tbComment, user);
         return ResultDTO.okOf();
     }
 
+    /**
+     * 根据评论 id 获取其子评论
+     * @param id
+     * @return
+     */
     @RequestMapping(value = "/comment/{id}", method = RequestMethod.GET)
     @ResponseBody
     public ResultDTO<List<CommentDTO>> subComment(@PathVariable(name = "id") Long id) {
