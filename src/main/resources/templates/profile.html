@@ -60,23 +60,23 @@
         <nav aria-label="Page navigation" style="float: right">
             <ul class="pagination">
                 <li th:if="${pagination.showFirstPage} == true">
-                    <a th:href="@{'/profile/' + ${sessions}(page=${1})}" aria-label="FisrtPage">
+                    <a th:href="@{'/profile/' + ${section}(page=${1})}" aria-label="FisrtPage">
                         <span aria-hidden="true">&lt;&lt;</span>
                     </a>
                 </li>
                 <li th:if="${pagination.showPrevious} == true">
-                    <a th:href="@{'/profile/' + ${sessions}(page=${pagination.previousPage})}" aria-label="Previous">
+                    <a th:href="@{'/profile/' + ${section}(page=${pagination.previousPage})}" aria-label="Previous">
                         <span aria-hidden="true">&lt;</span>
                     </a>
                 </li>
-                <li th:each="page:${pagination.pages}" th:class="${page == pagination.currentPage} ? 'active' : ''"><a th:href="@{'/profile/' + ${sessions}(page=${page})}" th:text="${page}"></a></li>
+                <li th:each="page:${pagination.pages}" th:class="${page == pagination.currentPage} ? 'active' : ''"><a th:href="@{'/profile/' + ${section}(page=${page})}" th:text="${page}"></a></li>
                 <li th:if="${pagination.showNext} == true">
-                    <a th:href="@{'/profile/' + ${sessions}(page=${pagination.nextPage})}" aria-label="Next">
+                    <a th:href="@{'/profile/' + ${section}(page=${pagination.nextPage})}" aria-label="Next">
                         <span aria-hidden="true">&gt;</span>
                     </a>
                 </li>
                 <li th:if="${pagination.showEndPage} == true">
-                    <a th:href="@{'/profile/' + ${sessions}(page=${pagination.totalPage})}" aria-label="EndPage">
+                    <a th:href="@{'/profile/' + ${section}(page=${pagination.totalPage})}" aria-label="EndPage">
                         <span aria-hidden="true">&gt;&gt;</span>
                     </a>
                 </li>
