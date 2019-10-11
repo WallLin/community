@@ -2,12 +2,16 @@ package com.kyrie.community.controller;
 
 import com.kyrie.community.dto.FileDTO;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.util.ResourceUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -33,7 +37,18 @@ public class UploadController {
         String fileSuffix = fileName.substring(fileName.lastIndexOf("."));
 
         // 设置文件上传路径
-        String filePath = request.getSession().getServletContext().getRealPath(UPLOAD_PATH);
+        File path = null;
+        try {
+            path = new File(ResourceUtils.getURL("classpath:").getPath());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        if(!path.exists()) {
+            path = new File("");
+        }
+        //如果上传目录为/static/upload/，则可以如下获取：
+        // System.out.println(path.getAbsolutePath());  D:\dev-core\idea-project\community\target\classes
+        String filePath = path.getAbsolutePath() + "/static" + UPLOAD_PATH;;
         File file = new File(filePath);
 
         // 如果文件夹不存在
