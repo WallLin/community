@@ -2,6 +2,8 @@ package com.kyrie.community.controller;
 
 import com.kyrie.community.dto.PaginationDTO;
 import com.kyrie.community.entity.TbUser;
+import com.kyrie.community.exception.CustomizeErrorCode;
+import com.kyrie.community.exception.CustomizeException;
 import com.kyrie.community.service.NotificationService;
 import com.kyrie.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,9 @@ public class ProfileController {
                           Model model,
                           HttpServletRequest request) {
         TbUser user = (TbUser) request.getSession().getAttribute("user");
+        if (user == null) {
+            throw new CustomizeException(CustomizeErrorCode.NO_LOGIN);
+        }
         if ("questions".equals(action)) {
             model.addAttribute("section", action);
             model.addAttribute("sectionName", "我的提问");

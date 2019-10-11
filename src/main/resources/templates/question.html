@@ -3,6 +3,10 @@
 <head>
     <div th:insert="~{header.html :: head}"></div>
     <title th:text="${question.title}"></title>
+    <link rel="stylesheet" href="/plugins/editor/css/editormd.preview.css"/>
+    <script src="/plugins/editor/js/editormd.min.js"></script>
+    <script src="/plugins/editor/lib/marked.min.js"></script>
+    <script src="/plugins/editor/lib/prettify.min.js"></script>
 </head>
 <body>
 <div th:insert="~{navigation :: nav}"></div>
@@ -20,9 +24,17 @@
             </span>
             <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <!-- 问题描述 -->
-            <div th:text="${question.description}" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                desc
+            <div id="markdown-view" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <textarea style="display:none;" th:text="${question.description}"></textarea>
             </div>
+            <script type="text/javascript">
+                $(function() {
+                    var testView = editormd.markdownToHTML("markdown-view", {
+                        htmlDecode : true,  // Enable / disable HTML tag encode.
+                        tmlDecode : "style,script,iframe",  // Note: If enabled, you should filter some dangerous HTML tags for website security.
+                    });
+                });
+            </script>
             <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 
             <!-- 标签 -->

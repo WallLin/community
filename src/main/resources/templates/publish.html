@@ -2,6 +2,9 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <div th:insert="~{header.html :: head}"></div>
+    <link rel="stylesheet" href="/plugins/editor/css/editormd.min.css"/>
+    <script src="/plugins/editor/js/editormd.min.js"></script>
+    <!--<script src="/plugins/editor/js/plugins/image-dialog/image-dialog.js"></script>-->
     <title>提问 - Kyrie Community</title>
 </head>
 <body>
@@ -20,10 +23,26 @@
                 <label for="title">问题标题（简单扼要）:</label>
                 <input autocomplete="off" type="text" class="form-control" id="title" name="title" placeholder="问题标题" th:value="${title}">
             </div>
-            <div class="form-group">
-                <label for="description">问题补充 (必填，请参照右侧提示):</label>
-                <textarea class="form-control" id="description" name="description" rows="15" th:text="${description}"></textarea>
+            <!-- 问题补充 添加富文本编辑器 -->
+            <div id="editor">
+                <textarea style="display:none;" id="description" name="description" th:text="${description}"></textarea>
             </div>
+            <script type="text/javascript">
+                $(function() {
+                    var editor = editormd("editor", {
+                        width: "100%",
+                        height: 500,
+                        placeholder : "问题补充 (必填，请参照右侧提示):",
+                        watch : false,
+                        delay : 0,
+                        imageUpload          : true,          // Enable/disable upload
+                        imageFormats         : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+                        imageUploadURL       : "http://localhost:8887/upload",             // Upload url
+                        path : "/plugins/editor/lib/"  // Autoload modules mode, codemirror, marked... dependents libs path
+                    });
+                });
+            </script>
+
             <div class="form-group">
                 <label for="tag">添加标签</label>
                 <input type="text" class="form-control" id="tag" name="tag" placeholder="标签, 如Java(用逗号,分隔)" autocomplete="off" th:value="${tag}">
