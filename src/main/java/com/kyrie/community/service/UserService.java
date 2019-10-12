@@ -34,7 +34,9 @@ public class UserService {
         }
         // 更新用户信息
         else {
-            tbUserMapper.updateByExampleSelective(tbUser, new TbUserExample());
+            TbUserExample tbUserExample = new TbUserExample();
+            tbUserExample.createCriteria().andAccountIdEqualTo(tbUser.getAccountId());
+            tbUserMapper.updateByExampleSelective(tbUser, tbUserExample);
         }
     }
 }

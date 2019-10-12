@@ -3,6 +3,7 @@ package com.kyrie.community.service;
 import com.kyrie.community.dto.CommentDTO;
 import com.kyrie.community.entity.*;
 import com.kyrie.community.enums.CommentTypeEnum;
+import com.kyrie.community.enums.NotificationStatusEnum;
 import com.kyrie.community.enums.NotificationTypeEnum;
 import com.kyrie.community.exception.CustomizeErrorCode;
 import com.kyrie.community.exception.CustomizeException;
@@ -73,7 +74,9 @@ public class CommentService {
                 tbQuestionExtMapper.incCommentCount(tbQuestion);
 
                 // 创建通知
-                createNotification(tbComment, user, tbQuestion, NotificationTypeEnum.QUESTION.getType());
+                if (tbQuestion.getCreatorId() != user.getId()) {  // 自己评论自己的问题则不通知
+                    createNotification(tbComment, user, tbQuestion, NotificationTypeEnum.QUESTION.getType());
+                }
             }
 
             // 回复评论
@@ -94,7 +97,10 @@ public class CommentService {
 
                 // 创建通知
                 TbQuestion tbQuestion = tbQuestionMapper.selectByPrimaryKey(comment.getParentId());
-                createNotification(tbComment, user, tbQuestion, NotificationTypeEnum.COMMENT.getType());
+                // 回复自己的评论不需要发送通知
+                if (comment.getCommentator() != user.getId()) {
+                    createNotification(tbComment, user, tbQuestion, NotificationTypeEnum.COMMENT.getType());
+                }
             }
         }
     }
@@ -110,11 +116,17 @@ public class CommentService {
         TbNotification tbNotification = new TbNotification();
         tbNotification.setNotifierId(tbComment.getCommentator()); // 通知者 id
         tbNotification.setNotifierName(user.getName());           // 通知者名称
-        tbNotification.setReceiverId(tbQuestion.getCreatorId());
+        // 如果回复问题，则只通知问题创建者
+        if (type == NotificationTypeEnum.QUESTION.getType()) {
+            tbNotification.setReceiverId(tbQuestion.getCreatorId());
+        } else { // 回复评论
+            TbComment comment = tbCommentMapper.selectByPrimaryKey(tbComment.getParentId());
+            tbNotification.setReceiverId(comment.getCommentator());
+        }
         tbNotification.setOuterId(tbQuestion.getId());
         tbNotification.setOuterTitle(tbQuestion.getTitle());
         tbNotification.setType(type);             // 通知类型：问题或评论
-        tbNotification.setStatus(1);           // 通知状态：是否已读  '1' : 表示未读  '0' : 表示已读
+        tbNotification.setStatus(NotificationStatusEnum.UNREAD.getStatus());           // 通知状态：是否已读  '1' : 表示未读  '0' : 表示已读
         tbNotification.setGmtCreated(System.currentTimeMillis());
 
         tbNotificationMapper.insert(tbNotification);
