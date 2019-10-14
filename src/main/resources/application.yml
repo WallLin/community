@@ -13,9 +13,15 @@ spring:
     password:
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-#mybatis≈‰÷√
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
   type-aliases-package: com.kyrie.community.entity
   mapper-locations: classpath:mapper/*.xml
+
+logging:
+  file: logs/community.log
+  file.max-history: 15
+  file.max-size: 100MB
+  level:
+    root: info
