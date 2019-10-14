@@ -5,6 +5,7 @@ import com.kyrie.community.dto.UserDTO;
 import com.kyrie.community.entity.TbUser;
 import com.kyrie.community.provider.GithubProvider;
 import com.kyrie.community.service.UserService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -61,7 +62,11 @@ public class AuthorizeController {
             tbUser.setToken(UUID.randomUUID().toString());
             tbUser.setName(userDTO.getName());
             tbUser.setAccountId(String.valueOf(userDTO.getId()));
-            tbUser.setAvatarUrl(userDTO.getAvatarUrl());
+            if (StringUtils.isBlank(userDTO.getAvatarUrl())) {
+                tbUser.setAvatarUrl("/images/defaultAvatar.png"); // 给用户设置默认头像
+            } else {
+                tbUser.setAvatarUrl(userDTO.getAvatarUrl());
+            }
             tbUser.setBio(userDTO.getBio());
             userService.createOrUpdate(tbUser);  // 创建或更新用户信息
             // 将用户登录状态的信息放到Cookie中

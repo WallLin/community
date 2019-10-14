@@ -1,5 +1,6 @@
 package com.kyrie.community.mapper;
 
+import com.kyrie.community.dto.QuestionSearchDTO;
 import com.kyrie.community.entity.TbQuestion;
 
 import java.util.List;
@@ -23,4 +24,18 @@ public interface TbQuestionExtMapper {
      * @return
      */
     List<TbQuestion> selectRelated(TbQuestion tbQuestion);
+
+    /**
+     * 根据 search 关键字搜索相关问题
+     * @param questionSearchDTO
+     * @return
+     */
+    List<TbQuestion> selectBySearch(QuestionSearchDTO questionSearchDTO);
+
+    /**
+     * 根据 search 关键字计算问题的总笔数
+     * @param questionSearchDTO
+     * @return
+     */
+    long countBySearch(QuestionSearchDTO questionSearchDTO);
 }

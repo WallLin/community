@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kyrie.community.mapper.TbQuestionExtMapper">
-  <resultMap id="BaseResultMap" type="com.kyrie.community.entity.TbQuestion">
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="title" jdbcType="VARCHAR" property="title" />
-    <result column="gmt_created" jdbcType="BIGINT" property="gmtCreated" />
-    <result column="gmt_modified" jdbcType="BIGINT" property="gmtModified" />
-    <result column="creator_id" jdbcType="INTEGER" property="creatorId" />
-    <result column="comment_count" jdbcType="INTEGER" property="commentCount" />
-    <result column="view_count" jdbcType="INTEGER" property="viewCount" />
-    <result column="like_count" jdbcType="INTEGER" property="likeCount" />
-    <result column="tag" jdbcType="VARCHAR" property="tag" />
-  </resultMap>
-  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.kyrie.community.entity.TbQuestion">
-    <result column="description" jdbcType="LONGVARCHAR" property="description" />
-  </resultMap>
+    <resultMap id="BaseResultMap" type="com.kyrie.community.entity.TbQuestion">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="gmt_created" jdbcType="BIGINT" property="gmtCreated"/>
+        <result column="gmt_modified" jdbcType="BIGINT" property="gmtModified"/>
+        <result column="creator_id" jdbcType="INTEGER" property="creatorId"/>
+        <result column="comment_count" jdbcType="INTEGER" property="commentCount"/>
+        <result column="view_count" jdbcType="INTEGER" property="viewCount"/>
+        <result column="like_count" jdbcType="INTEGER" property="likeCount"/>
+        <result column="tag" jdbcType="VARCHAR" property="tag"/>
+    </resultMap>
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.kyrie.community.entity.TbQuestion">
+        <result column="description" jdbcType="LONGVARCHAR" property="description"/>
+    </resultMap>
 
-  <update id="incViewCount" parameterType="com.kyrie.community.entity.TbQuestion">
+    <update id="incViewCount" parameterType="com.kyrie.community.entity.TbQuestion">
     update tb_question
     set
       view_count = view_count + #{viewCount,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-  <update id="incCommentCount" parameterType="com.kyrie.community.entity.TbQuestion">
+    <update id="incCommentCount" parameterType="com.kyrie.community.entity.TbQuestion">
     update tb_question
     set
       comment_count = comment_count + #{commentCount,jdbcType=INTEGER}
@@ -35,5 +35,27 @@
         id, title, tag
     from tb_question
     where id != #{id,jdbcType=BIGINT} and tag regexp #{tag,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectBySearch" parameterType="com.kyrie.community.dto.QuestionSearchDTO"
+          resultMap="ResultMapWithBLOBs">
+      select
+      *
+      from tb_question
+      <where>
+          <if test="search != null and search != ''">
+              title regexp #{search,jdbcType=VARCHAR}
+          </if>
+      </where>
+      order by gmt_created desc limit #{page,jdbcType=INTEGER}, #{size,jdbcType=INTEGER}
+  </select>
+
+  <select id="countBySearch" parameterType="com.kyrie.community.dto.QuestionSearchDTO" resultType="java.lang.Long">
+    select count(*) from tb_question
+    <where>
+      <if test="search != null and search != ''">
+        title regexp #{search,jdbcType=VARCHAR}
+      </if>
+    </where>
   </select>
 </mapper>
