@@ -49,7 +49,7 @@
             </div>
 
             <!--标签页-->
-            <div id="showTag" style="display: none; outline: 0" tabindex="0" hidefocus="true" onblur="alert('hello!')">
+            <div id="showTag" style="display: none">
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" th:class="${selectCategoryStat.first ? 'active' : ''}" th:each="selectCategory,selectCategoryStat: ${tags}">
                         <a th:href="${'#' + selectCategory.categoryName}" role="tab" data-toggle="tab"><span th:text="${selectCategory.categoryName}"></span></a>
@@ -87,9 +87,9 @@
         $("#tag").focus(function(){
             $("#showTag").show();
         });
-        $("#showTag").blur(function(){
+        /*$("#showTag").blur(function(){
             $("#showTag").hide();
-        });
+        });*/
     });
 </script>
 
